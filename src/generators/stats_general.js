@@ -182,12 +182,6 @@ async function main() {
       return !excludedRepos.includes(full) && !excludedRepos.includes(short);
     });
 
-    const repos = filteredRepoNodes.map((repo) => repo.nameWithOwner);
-    const queries = new GitHubQueries(token);
-    const userStats = new UserStats(username, queries, repos);
-    const totalLinesChanged = await userStats.linesChanged();
-    const views = await userStats.views();
-
     const stats = {
       name: user.name || username,
       stars: filteredRepoNodes.reduce(
@@ -196,8 +190,6 @@ async function main() {
       ),
       forks: filteredRepoNodes.reduce((sum, repo) => sum + repo.forkCount, 0),
       contributions: user.contributionsCollection.totalCommitContributions,
-      linesChanged: totalLinesChanged,
-      views: views,
       repos: filteredRepoNodes.length,
     };
 
