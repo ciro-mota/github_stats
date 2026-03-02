@@ -68,3 +68,35 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Keepalive commit (every 59 days)
+        run: |
+          KEEPALIVE_FILE=".github/.keepalive"
+          CURRENT_DATE=$(date +%s)
+          NEEDS_COMMIT=false
+          
+          if [ -f "$KEEPALIVE_FILE" ]; then
+            LAST_UPDATE=$(cat "$KEEPALIVE_FILE")
+            DAYS_DIFF=$(( ($CURRENT_DATE - $LAST_UPDATE) / 86400 ))
+            echo "Days since last keepalive: $DAYS_DIFF"
+            if [ $DAYS_DIFF -ge 59 ]; then
+              NEEDS_COMMIT=true
+            fi
+          else
+            echo "Keepalive file not found, creating first one"
+            NEEDS_COMMIT=true
+          fi
+          
+          if [ "$NEEDS_COMMIT" = true ]; then
+            echo "Creating keepalive commit..."
+            mkdir -p .github
+            echo "$CURRENT_DATE" > "$KEEPALIVE_FILE"
+            git add "$KEEPALIVE_FILE"
+            git commit -m "chore: keepalive commit to prevent workflow deactivation"
+            git push origin main
+            echo "Keepalive commit created successfully"
+          else
+            echo "Keepalive not needed yet (less than 59 days since last commit)"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
