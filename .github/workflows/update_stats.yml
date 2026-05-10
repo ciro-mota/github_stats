@@ -69,7 +69,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Keepalive commit (every 59 days)
+      - name: Keepalive commit (every 50 days)
         run: |
           KEEPALIVE_FILE=".github/.keepalive"
           CURRENT_DATE=$(date +%s)
@@ -79,7 +79,7 @@ jobs:
             LAST_UPDATE=$(cat "$KEEPALIVE_FILE")
             DAYS_DIFF=$(( ($CURRENT_DATE - $LAST_UPDATE) / 86400 ))
             echo "Days since last keepalive: $DAYS_DIFF"
-            if [ $DAYS_DIFF -ge 59 ]; then
+            if [ $DAYS_DIFF -ge 50 ]; then
               NEEDS_COMMIT=true
             fi
           else
@@ -96,7 +96,7 @@ jobs:
             git push origin main
             echo "Keepalive commit created successfully"
           else
-            echo "Keepalive not needed yet (less than 59 days since last commit)"
+            echo "Keepalive not needed yet (less than 50 days since last commit)"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
