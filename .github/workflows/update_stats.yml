@@ -21,6 +21,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
         with:
+          ref: main
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -47,12 +48,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Switch to the main branch
-        run: |
-          git fetch origin main
-          git checkout main
-          git pull origin main
 
       - name: Indexing and adding SVG
         run: |
