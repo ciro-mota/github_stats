@@ -50,55 +50,55 @@ class UserStats {
     this.username = username;
     this.queries = queries;
     this.repos = repos;
-    this._linesChanged = null;
+    // this._linesChanged = null;
     this._views = null;
   }
 
-  async linesChanged() {
-    if (this._linesChanged !== null) {
-      return this._linesChanged;
-    }
+  // async linesChanged() {
+  //   if (this._linesChanged !== null) {
+  //     return this._linesChanged;
+  //   }
 
-    let additions = 0;
-    let deletions = 0;
+  //   let additions = 0;
+  //   let deletions = 0;
 
-    for (const repo of await this.repos) {
-      try {
-        const r = await this.queries.queryRest(
-          `/repos/${repo}/stats/contributors`
-        );
+  //   for (const repo of await this.repos) {
+  //     try {
+  //       const r = await this.queries.queryRest(
+  //         `/repos/${repo}/stats/contributors`
+  //       );
 
-        if (!Array.isArray(r)) {
-          continue;
-        }
+  //       if (!Array.isArray(r)) {
+  //         continue;
+  //       }
 
-        for (const authorObj of r) {
-          if (
-            typeof authorObj !== "object" ||
-            !authorObj.author ||
-            typeof authorObj.author !== "object"
-          ) {
-            continue;
-          }
+  //       for (const authorObj of r) {
+  //         if (
+  //           typeof authorObj !== "object" ||
+  //           !authorObj.author ||
+  //           typeof authorObj.author !== "object"
+  //         ) {
+  //           continue;
+  //         }
 
-          const author = authorObj.author.login || "";
-          if (author !== this.username) {
-            continue;
-          }
+  //         const author = authorObj.author.login || "";
+  //         if (author !== this.username) {
+  //           continue;
+  //         }
 
-          for (const week of authorObj.weeks || []) {
-            additions += week.a || 0;
-            deletions += week.d || 0;
-          }
-        }
-      } catch (error) {
-        // ignore errors for individual repos
-      }
-    }
+  //         for (const week of authorObj.weeks || []) {
+  //           additions += week.a || 0;
+  //           deletions += week.d || 0;
+  //         }
+  //       }
+  //     } catch (error) {
+  //       // ignore errors for individual repos
+  //     }
+  //   }
 
-    this._linesChanged = additions + deletions;
-    return this._linesChanged;
-  }
+  //   this._linesChanged = additions + deletions;
+  //   return this._linesChanged;
+  // }
 
   async views() {
     if (this._views !== null) {
