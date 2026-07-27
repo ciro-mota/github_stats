@@ -21,7 +21,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
         with:
-          ref: main
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -31,11 +30,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-
-      - name: Reset generated SVG output
-        run: |
-          mkdir -p output
-          rm -f output/*.svg
 
       - name: Generate GitHub stats SVG
         env:
@@ -54,9 +48,15 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Switch to the main branch
+        run: |
+          git fetch origin main
+          git checkout main
+          git pull origin main
+
       - name: Indexing and adding SVG
         run: |
-          git add -A output
+          git add output/*.svg
 
       - name: Commit and push updated SVG
         run: |
